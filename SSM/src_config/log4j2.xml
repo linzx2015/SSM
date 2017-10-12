@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status=debug 可以查看log4j的装配过程 -->
+<configuration status="off" monitorInterval="1800" scan="true" scanPeriod="60 seconds" debug="false">
+	<appenders>
+		<!-- 定义控制台输出 -->
+		<Console name="Console" target="SYSTEM_OUT" follow="false">
+			<PatternLayout
+				pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+		</Console>
+		
+		<!-- 系统打印日志-->
+		<RollingRandomAccessFile name="System"
+			fileName="logs/ssm/system.log" filePattern="logs/ssm/system_%d{yyyy-MM-dd}_%i.log">
+			<PatternLayout
+				pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<!-- 默认100m,如果超过,会重新生成一个文件 -->
+				<SizeBasedTriggeringPolicy size="100M" />
+			</Policies>
+		</RollingRandomAccessFile>
+	</appenders>
+	<loggers>
+		<!-- Root Logger -->
+		<root level="debug">
+			<appender-ref ref="Console" />
+			<appender-ref ref="System" />
+		</root>
+	</loggers>
+</configuration>

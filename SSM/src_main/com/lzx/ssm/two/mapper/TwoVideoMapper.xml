@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzx.ssm.two.mapper.TwoVideoMapper">
+	<!--传入参数自定义map -->
+	<parameterMap id="TwoVideoParam" type="com.lzx.ssm.two.pojo.Video"/>
+	
+	<insert id="insertOne" parameterMap="TwoVideoParam" keyProperty="userId" useGeneratedKeys="true">
+		insert into t_video(
+			video_name,
+			video_url,
+			video_id,
+			video_description,
+			video_create_time,
+			video_update_time)
+		values(
+			#{videoName},
+			#{videoUrl},
+			#{videoId},
+			#{videoDescription},
+			#{videoCreateTime},
+			#{videoUpdateTime})
+	</insert>
+	
+	<update id="updateOne" parameterMap="TwoVideoParam">
+		update t_video 
+		<set>
+			video_name=#{videoName},
+			video_url=#{videoUrl},
+			video_description=#{videoDescription},
+			video_create_time=#{videoCreateTime},
+			video_update_time=#{videoUpdateTime}
+		</set> 
+		where (video_id=#{videoId})
+	</update>
+	
+	<delete id="deleteOne" parameterMap="TwoVideoParam">
+	   <choose>
+	   		<when test="videoId!=null">
+				delete from t_video where video_id=#{videoId}
+	   		</when>
+	   </choose>
+	</delete>
+	
+	<!-- 公共sql -->
+	<sql id="queryAllSql">
+		select * from t_video
+	</sql>
+	
+	<select id="findOne" parameterType="map" resultType="com.lzx.ssm.two.pojo.Video">
+		<include refid="queryAllSql"></include> 
+		<where>
+			<if test="videoId!=null">
+				and video_id=#{videoId}
+			</if>
+		</where>
+	</select>
+
+	<sql id="orderSql">
+		<if test="sort_column=='videoName'">
+			order by video_name
+		</if>
+		<if test="sort_column=='videoCreateTime'">
+			order by video_create_time
+		</if>
+		<if test="sort_column=='videoUpdateTime'">
+			order by video_update_time
+		</if>
+	</sql>
+	
+	<select id="findMulti" parameterType="map" resultType="com.lzx.ssm.two.pojo.Video">
+		<choose>
+			<when test="pageCond=='true'">
+				select count(*) as video_id
+			</when>
+			<otherwise>
+				select * 
+			</otherwise>
+		</choose>
+		from t_video
+		<where>
+			<if test="keywords!=null and keywords!=''">
+				and (video_name like #{keywords} or video_url like #{keywords} or video_description like 
+				#{keywords} or set_user_name like #{keywords})
+			</if>
+		</where>
+		<choose>
+			<when test="pageCond=='true'">
+			</when>
+			<otherwise>
+				<choose>
+					<when test="sort_column!=null and sort_type==1">
+						<include refid="orderSql"></include> asc
+					</when>
+					<when test="sort_column!=null and sort_type==0">
+						<include refid="orderSql"></include> desc
+					</when>
+					<otherwise>
+						order by video_create_time desc
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		<if test="pageCond=='false'">
+			limit #{page},#{pagenum}
+		</if>
+	</select>
+	
+</mapper>

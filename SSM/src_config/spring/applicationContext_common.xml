@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd"
+	default-autowire="byName">
+	<!-- 设置扫描的包路径 -->
+	<context:component-scan base-package="com.lzx.ssm"/>
+	
+	<!--引入queue文件 -->
+	<!--<import resource="classpath*:spring/activemq_send.xml"/>-->
+	
+	<!-- 配置数据源 -->
+    <bean id="ds_one" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />  
+        <property name="url" value="jdbc:mysql://localhost:3306/one?useUnicode=true&amp;characterEncoding=utf-8" />  
+        <property name="username" value="root" />  
+        <property name="password" value="root" />  
+        <property name="initialSize" value="1" />  
+        <property name="minIdle" value="1" />   
+        <property name="maxActive" value="20" />  
+        <property name="maxWait" value="60000" />
+        <!-- 超过时间限制是否回收 -->
+        <property name="removeAbandoned" value="true" />
+        <!-- 超过时间限制多长； -->
+        <property name="removeAbandonedTimeout" value="180" />
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        <!-- 用来检测连接是否有效的sql，要求是一个查询语句-->
+        <property name="validationQuery" value="SELECT 1" />
+        <!-- 申请连接的时候检测 -->
+        <property name="testWhileIdle" value="true" />
+        <!-- 申请连接时执行validationQuery检测连接是否有效，配置为true会降低性能 -->
+        <property name="testOnBorrow" value="false" />
+        <!-- 归还连接时执行validationQuery检测连接是否有效，配置为true会降低性能  -->
+        <property name="testOnReturn" value="false" />
+    </bean>
+    
+    <bean id="ds_two" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />  
+        <property name="url" value="jdbc:mysql://localhost:3306/two?useUnicode=true&amp;characterEncoding=utf-8" />  
+        <property name="username" value="root" />  
+        <property name="password" value="root" />  
+        <property name="initialSize" value="1" />  
+        <property name="minIdle" value="1" />   
+        <property name="maxActive" value="20" />  
+        <property name="maxWait" value="60000" />
+        <!-- 超过时间限制是否回收 -->
+        <property name="removeAbandoned" value="true" />
+        <!-- 超过时间限制多长； -->
+        <property name="removeAbandonedTimeout" value="180" />
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        <!-- 用来检测连接是否有效的sql，要求是一个查询语句-->
+        <property name="validationQuery" value="SELECT 1" />
+        <!-- 申请连接的时候检测 -->
+        <property name="testWhileIdle" value="true" />
+        <!-- 申请连接时执行validationQuery检测连接是否有效，配置为true会降低性能 -->
+        <property name="testOnBorrow" value="false" />
+        <!-- 归还连接时执行validationQuery检测连接是否有效，配置为true会降低性能  -->
+        <property name="testOnReturn" value="false" />
+    </bean>
+	
+	<!-- 动态配置数据源 -->
+	<bean id="dataSource" class="com.lzx.ssm.common.datasource.DynamicDataSource">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<!-- 根据需要增加数据源 -->
+				<entry value-ref="ds_one" key="ds_one"></entry>
+				<entry value-ref="ds_two" key="ds_two"></entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!--typeAliasesPackage取包的别名,方便操作 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<!-- 通配符识别包 -->
+		<property name="typeAliasesPackage" value="com.lzx.ssm.*.pojo"/>
+		<!-- 配置mybatis配置文件 -->
+    	<property name="configLocation" value="classpath:mybatis.cfg.xml"/>
+    	<!-- 配置mapper资源文件,可使用通配符 -->
+    	<property name="mapperLocations" value="classpath:com/lzx/ssm/*/mapper/*Mapper.xml"/>
+	</bean>
+	
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 通配符识别包 -->
+		<property name="basePackage" value="com.lzx.ssm.*.mapper"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean> 
+	
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+  		<tx:attributes>
+	 		<tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception"/>
+	 		<tx:method name="update*" propagation="REQUIRED" rollback-for="Exception"/>
+	 		<tx:method name="delete*" propagation="REQUIRED" rollback-for="Exception"/>
+	 		<tx:method name="*" read-only="true"/>
+  		</tx:attributes>
+  </tx:advice>
+  
+  <!-- 自定义切入点 -->
+  <bean id="dataSourceAspect" class="com.lzx.ssm.common.datasource.MDataSourceAspect"></bean>
+  
+  <aop:config>
+  	<aop:aspect ref="dataSourceAspect" id="myAspect">
+	  	<aop:pointcut expression="execution(* com.lzx.ssm.*.service.impl.*.*(..))" id="pointcut"/>
+  		<aop:before pointcut-ref="pointcut" method="intercept"/>
+  	</aop:aspect>
+  </aop:config>
+</beans>	
