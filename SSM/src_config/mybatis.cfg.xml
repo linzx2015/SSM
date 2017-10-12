@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<!-- 配置Log4j -->
+		<setting name="logImpl" value="LOG4J2"/>
+		<!-- 延迟加载 -->
+		<setting name="lazyLoadingEnabled" value="true"/>
+		<!-- 按需加载 -->
+		<setting name="aggressiveLazyLoading" value="false"/>
+		<!--是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 的类似映射-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+</configuration>

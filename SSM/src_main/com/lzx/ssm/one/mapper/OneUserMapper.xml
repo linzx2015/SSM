@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzx.ssm.one.mapper.OneUserMapper">
+	<!--传入参数自定义map -->
+	<parameterMap id="OneUserParam" type="com.lzx.ssm.one.pojo.User"/>
+	
+	<insert id="insertOne" parameterMap="OneUserParam" keyProperty="userId" useGeneratedKeys="true">
+		insert into o_user(
+			user_id,
+			user_name,
+			user_account,
+			user_password,
+			user_sex,
+			user_age,
+			user_creator,
+			user_department,
+			user_phone,
+			user_email,
+			user_create_time,
+			user_update_time,
+			user_last_login_time)
+		values(
+			#{userId},
+			#{userName},
+			#{userAccount},
+			#{userPassword},
+			#{userSex},
+			#{userAge},
+			#{userCreator},
+			#{userDepartment},
+			#{userPhone},
+			#{userEmail},
+			#{userCreateTime},
+			#{userUpdateTime},
+			#{userLastLoginTime});
+	</insert>
+	
+	<update id="updateOne" parameterMap="OneUserParam">
+		update o_user 
+		<set>
+			user_name=#{userName},
+			user_account=#{userAccount},
+		    user_password=#{userPassword},
+			user_sex=#{userSex},
+			user_age=#{userAge},
+		    user_creator=#{userCreator},
+			user_department=#{userDepartment},
+			user_phone=#{userPhone},
+			user_email=#{userEmail},
+			user_create_time=#{userCreateTime},
+			user_update_time=#{userUpdateTime},
+			user_last_login_time=#{userLastLoginTime}
+		</set> 
+		where (user_id=#{userId})
+	</update>
+	
+	<delete id="deleteOne" parameterMap="OneUserParam">
+	   <choose>
+	   		<when test="userId!=null">
+				delete from o_user where user_id=#{userId}
+	   		</when>
+	   </choose>
+	</delete>
+	
+	<!-- 公共sql -->
+	<sql id="queryAllSql">
+		select * from o_user
+	</sql>
+	
+	<select id="findOne" parameterType="map" resultType="com.lzx.ssm.one.pojo.User">
+		<include refid="queryAllSql"></include> 
+		<where>
+			<if test="userId!=null">
+				 user_id=#{userId}
+			</if>
+		</where>
+	</select>
+
+	<sql id="orderSql">
+		<if test="sort_column=='userName'">
+		 	order by user_name
+		</if>
+		<if test="sort_column=='userAccount'">
+		 	order by user_account 
+		</if>
+		<if test="sort_column=='userSex'">
+		 	order by user_sex 
+		</if>
+		<if test="sort_column=='userAge'">
+		 	order by user_age
+		</if>
+		<if test="sort_column=='userPhone'">
+		 	order by user_phone
+		</if>
+		<if test="sort_column=='userDepartment'">
+		 	order by user_department
+		</if>
+		<if test="sort_column=='userCreator'">
+		 	order by user_creator
+		</if>
+		<if test="sort_column=='userEmail'">
+		 	order by user_email
+		</if>
+		<if test="sort_column=='userCreateTime'">
+		 	order by user_create_time
+		</if>
+		<if test="sort_column=='userUpdateTime'">
+		 	order by user_update_time
+		</if>
+		<if test="sort_column=='userLastLoginTime'">
+		 	order by user_create_time
+		</if>
+	</sql>	
+	
+	<select id="findMulti" parameterType="map" resultType="com.lzx.ssm.one.pojo.User">
+		<choose>
+			<when test="pageCond=='true'">
+				select count(*) as userId
+			</when>
+			<otherwise>
+				select * 
+			</otherwise>
+		</choose>
+		from o_user
+		<where>
+			<if test="keywords!=null and keywords!=''">
+				and (user_name like #{keywords} or user_account like #{keywords} or user_age like #{keywords} or user_creator like #{keywords}
+				or user_email like #{keywords} or user_phone like #{keywords} or user_sex like #{keywords} or user_department like #{keywords}
+				or user_create_time like #{keywords} or user_update_time like #{keywords} or user_last_login_time like #{keywords})
+			</if>
+		</where>
+		<choose>
+			<when test="pageCond=='true'">
+			</when>
+			<otherwise>
+				<choose>
+					<when test="sort_column!=null and sort_type==1">
+						<include refid="orderSql"></include> asc
+					</when>
+					<when test="sort_column!=null and sort_type==0">
+						<include refid="orderSql"></include> desc
+					</when>
+					<otherwise>
+						order by user_create_time desc
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+		<if test="pageCond=='false'">
+			limit #{page},#{pagenum}
+		</if>
+	</select>
+	
+</mapper>

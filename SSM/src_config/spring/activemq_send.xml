@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd"
+		>
+
+	<!-- 配置JMS连接工厂 -->
+	<bean id="queueConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<!-- Session缓存数量 -->
+		<property name="sessionCacheSize" value="10" />
+		<property name="targetConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<!-- MQ地址 -->
+				<property name="brokerURL" value="tcp://localhost:61616" />
+				 <!-- 是否异步发送 -->
+				<property name="useAsyncSend" value="true" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- 发送消息的目的地（一个主题） -->
+	<bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息主题的名字 -->
+		<constructor-arg index="0" value="SSM_USER" />
+	</bean>
+
+	<!-- 配置JMS模版 -->
+	<bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="queueConnectionFactory" />
+		<property name="defaultDestination" ref="queueDestination" />
+		<!-- 订阅发布模式 -->
+		<property name="pubSubDomain" value="false" />
+		<property name="receiveTimeout" value="1000" />
+	</bean>
+</beans>
