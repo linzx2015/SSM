@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
-import com.lzx.ssm.common.service.one.OneBaseServiceImpl;
+import com.lzx.ssm.common.service.impl.one.OneBaseServiceImpl;
 import com.lzx.ssm.common.util.PageInfoUtil;
 import com.lzx.ssm.one.mapper.OneUserMapper;
 import com.lzx.ssm.one.pojo.User;

@@ -2,6 +2,7 @@ package com.lzx.ssm.one.pojo;
 
 import java.io.Serializable;
 import java.util.Date;
+import com.alibaba.fastjson.JSONObject;
 
 public class User implements Serializable
 {
@@ -123,5 +124,24 @@ public class User implements Serializable
 	public void setUserLastLoginTime(Date userLastLoginTime)
 	{
 		this.userLastLoginTime = userLastLoginTime;
+	}
+	
+	public JSONObject toJSON()
+	{
+		JSONObject json=new JSONObject();
+		json.put("userId", this.getUserId());
+		json.put("userName", this.getUserName());
+		json.put("userAccount", this.getUserAccount());
+		json.put("userPassword", this.getUserPassword());
+		json.put("userSex", this.getUserSex());
+		json.put("userAge", this.getUserAge());
+		json.put("userCreator", this.getUserCreator());
+		json.put("userDepartment", this.getUserDepartment());
+		json.put("userPhone", this.getUserPhone());
+		json.put("userEmail", this.getUserEmail());
+		json.put("userCreateTime", this.getUserCreateTime());
+		json.put("userUpdateTime", this.getUserUpdateTime());
+		json.put("userLastLoginTime", this.getUserLastLoginTime());
+		return json;
 	}
 }

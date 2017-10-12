@@ -1,7 +1,7 @@
-package com.lzx.ssm.common.service.two;
+package com.lzx.ssm.common.service.impl.two;
 
 import com.lzx.ssm.common.datasource.DataSource;
-import com.lzx.ssm.common.service.BaseServiceImpl;
+import com.lzx.ssm.common.service.impl.BaseServiceImpl;
 
 /**
  * 使用数据源TWO

@@ -1,4 +1,4 @@
-package com.lzx.ssm.common.service;
+package com.lzx.ssm.common.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lzx.ssm.common.base.Base;

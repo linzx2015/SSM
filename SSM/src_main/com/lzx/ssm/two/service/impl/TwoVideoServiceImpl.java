@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
-import com.lzx.ssm.common.service.two.TwoBaseServiceImpl;
+import com.lzx.ssm.common.service.impl.two.TwoBaseServiceImpl;
 import com.lzx.ssm.common.util.PageInfoUtil;
 import com.lzx.ssm.two.mapper.TwoVideoMapper;
 import com.lzx.ssm.two.pojo.Video;

@@ -17,7 +17,7 @@
 	<context:component-scan base-package="com.lzx.ssm"/>
 	
 	<!--引入queue文件 -->
-	<!--<import resource="classpath*:spring/activemq_send.xml"/>-->
+	<import resource="classpath*:spring/activemq_msg.xml"/>
 	
 	<!-- 配置数据源 -->
     <bean id="ds_one" class="com.alibaba.druid.pool.DruidDataSource">

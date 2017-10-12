@@ -19,7 +19,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface DataSource {
+public @interface DataSource 
+{
     public static String ONE = "ds_one";
  
     public static String TWO = "ds_two";

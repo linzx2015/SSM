@@ -22,12 +22,27 @@
 			</bean>
 		</property>
 	</bean>
-
+	
 	<!-- 发送消息的目的地（一个主题） -->
 	<bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
 		<!-- 设置消息主题的名字 -->
-		<constructor-arg index="0" value="SSM_USER" />
+		<constructor-arg index="0" value="SSM_MSG" />
 	</bean>
+	
+    <!-- 消息消费者 ， 实现了MessageListener接口 -->
+    <bean id="msgReceiver" class="com.lzx.ssm.queue.reciver.MessageConsumer"></bean>
+    
+    <!-- gcpi消息监听容器 -->
+    <bean id="msgContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="queueConnectionFactory" />
+        <property name="destination" ref="queueDestination" />
+        <!-- 指定消息消费者 -->
+        <property name="messageListener" ref="msgReceiver" />
+        <!-- 配置固定监听数 -->
+        <!--<property name="concurrentConsumers" value="4"/>
+        --><!-- 配置多个并行监听区间,确保数据接收 -->
+        <property name="concurrency" value="1-3"/>
+    </bean>
 
 	<!-- 配置JMS模版 -->
 	<bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">

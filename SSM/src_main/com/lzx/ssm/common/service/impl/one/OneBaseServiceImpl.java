@@ -1,7 +1,7 @@
-package com.lzx.ssm.common.service.one;
+package com.lzx.ssm.common.service.impl.one;
 
 import com.lzx.ssm.common.datasource.DataSource;
-import com.lzx.ssm.common.service.BaseServiceImpl;
+import com.lzx.ssm.common.service.impl.BaseServiceImpl;
 
 /**
  * 使用数据源ONE

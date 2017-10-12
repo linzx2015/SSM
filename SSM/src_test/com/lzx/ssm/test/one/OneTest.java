@@ -11,21 +11,26 @@ import org.junit.Test;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lzx.ssm.common.test.BaseTest;
+import com.lzx.ssm.common.util.ConstantFinalUtil;
 import com.lzx.ssm.common.util.EncryptUtil;
 import com.lzx.ssm.common.util.EnumUtil;
 import com.lzx.ssm.one.pojo.User;
 import com.lzx.ssm.one.service.OneUserService;
+import com.lzx.ssm.queue.service.IMessageProducerService;
 
 public class OneTest extends BaseTest
 {
 	@Resource
 	private OneUserService userService;
+	@Resource
+	private IMessageProducerService messageProduceService;
 	
 	@Before
 	public void init()
 	{
 		super.init();
 		this.userService=(OneUserService) this.ac.getBean("userService");
+		this.messageProduceService=(IMessageProducerService) this.ac.getBean("messageProduceService");
 	}
 	
 	@Test
@@ -45,8 +50,10 @@ public class OneTest extends BaseTest
 		user.setUserCreateTime(new Date());
 		user.setUserUpdateTime(new Date());
 		user.setUserLastLoginTime(new Date());
-		JSONObject resultJSON=this.userService.insertOneService(user);
-		this.loggerMsg.info("--insert user---{}-",resultJSON);
+		//JSONObject resultJSON=this.userService.insertOneService(user);
+		messageProduceService.sendMessageService(ConstantFinalUtil.BUNDLE.getString("ssm.queue.user"),
+				ConstantFinalUtil.BUNDLE.getString("ssm.user.insert"), user.toJSON());
+		this.loggerMsg.info("--insert user---{}-");
 	}
 	
 	@Test
@@ -57,6 +64,8 @@ public class OneTest extends BaseTest
 		User user=this.userService.findOneService(paramMap);
 		this.loggerMsg.info("-user name--{}-",user.getUserName());
 	}
+	
+	
 	
 	@After
 	public void close()
